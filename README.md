@@ -1,1 +1,1 @@
-# data-visualization-of-depression
+# Depression Classification
