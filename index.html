@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Depression Prediction</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f7f9fc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding-top: 40px;
+        }
+
+        .container {
+            background: #fff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 480px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #0052cc;
+            margin-bottom: 25px;
+            font-weight: 700;
+        }
+
+        form {
+            display: grid;
+            grid-gap: 18px;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            color: #444;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 1rem;
+            border-radius: 8px;
+            border: 1.8px solid #ccc;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="number"]:focus {
+            border-color: #0052cc;
+            outline: none;
+            box-shadow: 0 0 6px #c2d4ff;
+        }
+
+        button {
+            background-color: #0052cc;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #003d99;
+        }
+
+        #result {
+            margin-top: 25px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-align: center;
+            color: #222;
+            min-height: 1.5em;
+        }
+
+        @media (max-width: 520px) {
+            .container {
+                margin: 15px;
+                padding: 25px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Depression Prediction</h1>
+        <form id="predict-form">
+            <label for="Age">Age</label>
+            <input type="number" id="Age" name="Age" min="10" max="100" required />
+
+            <label for="Academic_Pressure">Academic Pressure</label>
+            <input type="number" id="Academic_Pressure" name="Academic_Pressure" min="0" max="10" required />
+
+            <label for="CGPA">CGPA</label>
+            <input type="number" id="CGPA" name="CGPA" min="0" max="4" step="0.01" required />
+
+            <label for="Study_Satisfaction">Study Satisfaction</label>
+            <input type="number" id="Study_Satisfaction" name="Study_Satisfaction" min="0" max="10" required />
+
+            <label for="Sleep_Duration">Sleep Duration (hours)</label>
+            <input type="number" id="Sleep_Duration" name="Sleep_Duration" min="0" max="24" step="0.1" required />
+
+            <label for="Dietary_Habits">Dietary Habits</label>
+            <input type="number" id="Dietary_Habits" name="Dietary_Habits" min="0" max="10" required />
+
+            <label for="Suicidal_thoughts">Suicidal Thoughts (0 or 1)</label>
+            <input type="number" id="Suicidal_thoughts" name="Suicidal_thoughts" min="0" max="1" required />
+
+            <label for="Work_Study_Hours">Work/Study Hours</label>
+            <input type="number" id="Work_Study_Hours" name="Work_Study_Hours" min="0" max="24" required />
+
+            <label for="Financial_Stress">Financial Stress</label>
+            <input type="number" id="Financial_Stress" name="Financial_Stress" min="0" max="10" required />
+
+            <label for="Family_History_of_Mental_Illness">Family History of Mental Illness (0 or 1)</label>
+            <input type="number" id="Family_History_of_Mental_Illness" name="Family_History_of_Mental_Illness" min="0"
+                max="1" required />
+
+            <label for="City">City (encoded)</label>
+            <input type="number" id="City" name="City" min="0" required />
+
+            <label for="Profession">Profession (encoded)</label>
+            <input type="number" id="Profession" name="Profession" min="0" required />
+
+            <label for="Degree">Degree (encoded)</label>
+            <input type="number" id="Degree" name="Degree" min="0" required />
+
+            <button type="submit">Predict</button>
+        </form>
+        <p id="result"></p>
+    </div>
+
+    </form>
+    <p id="result"></p>
+    </div>
+
+    <script>
+        document.getElementById('predict-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const data = {
+                Age: parseInt(document.getElementById('Age').value),
+                Academic_Pressure: parseInt(document.getElementById('Academic_Pressure').value),
+                CGPA: parseFloat(document.getElementById('CGPA').value),
+                Study_Satisfaction: parseInt(document.getElementById('Study_Satisfaction').value),
+                Sleep_Duration: parseFloat(document.getElementById('Sleep_Duration').value),
+                Dietary_Habits: parseInt(document.getElementById('Dietary_Habits').value),
+                Suicidal_thoughts: parseInt(document.getElementById('Suicidal_thoughts').value),
+                Work_Study_Hours: parseInt(document.getElementById('Work_Study_Hours').value),
+                Financial_Stress: parseInt(document.getElementById('Financial_Stress').value),
+                Family_History_of_Mental_Illness: parseInt(document.getElementById('Family_History_of_Mental_Illness').value),
+                City: parseInt(document.getElementById('City').value),
+                Profession: parseInt(document.getElementById('Profession').value),
+                Degree: parseInt(document.getElementById('Degree').value),
+            };
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const result = await response.json();
+
+                document.getElementById('result').innerText =
+                    `Prediction: ${result.predicted_class === 1 ? 'Depression' : 'No Depression'}\n` +
+                    `Probability of Depression: ${(result.probability_depression * 100).toFixed(2)}%`;
+            } catch (error) {
+                document.getElementById('result').innerText = 'Error: ' + error.message;
+            }
+        });
+    </script>
+</body>
+
+</html>
